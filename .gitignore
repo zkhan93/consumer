@@ -1,0 +1,6 @@
+.git
+__pycache__
+*.py[co]
+build/
+dist/
+consumer.egg-info

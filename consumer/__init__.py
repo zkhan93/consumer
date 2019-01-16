@@ -1,1 +1,1 @@
-name='consumer'
+from base import *
