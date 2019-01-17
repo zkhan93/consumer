@@ -6,7 +6,7 @@ python:
 script:
   - pytest
 install:
-  - pip install codecov
+  - pip install codecov pytest
 deploy:
   - provider: pypi
     user: zeek
