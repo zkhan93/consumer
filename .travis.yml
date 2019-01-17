@@ -9,9 +9,7 @@ install:
 
 script:
   - python setup.py pytest
-
-after_script:
- - codecov
+  - codecov
 
  deploy:
   - provider: pypi
