@@ -3,10 +3,12 @@ sudo: false
 python: 
   - 2.7
   - 3.6
-script:
-  - pytest
+
 install:
   - pip install codecov pytest
+  - pip install ./dist/consumer-*.whl
+script:
+  - python setup.py pytest
 deploy:
   - provider: pypi
     user: zeek
