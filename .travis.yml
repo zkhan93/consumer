@@ -6,7 +6,6 @@ python:
 
 install:
   - pip install codecov pytest
-  - pip install ./dist/consumer-*.whl
 script:
   - python setup.py pytest
 deploy:
