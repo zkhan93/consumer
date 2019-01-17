@@ -11,7 +11,7 @@ script:
   - python setup.py pytest
   - codecov
 
- deploy:
+deploy:
   - provider: pypi
     user: zeek
     distributions: sdist bdist_wheel
