@@ -14,6 +14,8 @@ setuptools.setup(
     url="https://github.com/zkhan93/consumer",
     packages=setuptools.find_packages(),
     install_requires=['requests', 'defusedxml'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'pytest-cov'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

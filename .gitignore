@@ -1,6 +1,9 @@
 .git
-__pycache__
+__pycache__/
+.pytest_cache/
 *.py[co]
 build/
 dist/
 consumer.egg-info
+.coverage
+.eggs/

@@ -1,11 +1,20 @@
 language: python
-cache: pip
-python: 3.5
-script: true
+sudo: false
+python: 
+  - 2.7
+  - 3.6
+script:
+  - pytest
+install:
+  - pip install --user codecov
 deploy:
-  provider: pypi
-  user: zeek
-  distributions: sdist bdist_wheel
-  skip_existing: true
-  on:
-    tags: true
+  - provider: pypi
+    user: zeek
+    distributions: sdist bdist_wheel
+    skip_existing: true
+    skip_cleanup: true
+    on:
+      tags: true
+
+after_deploy:
+ - codecov
