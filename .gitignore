@@ -7,3 +7,4 @@ dist/
 consumer.egg-info
 .coverage
 .eggs/
+docs/build/

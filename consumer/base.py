@@ -1,3 +1,6 @@
+'''
+base module 
+'''
 from abc import ABCMeta, abstractproperty, abstractmethod
 from pprint import pformat
 from defusedxml import ElementTree
