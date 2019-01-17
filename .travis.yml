@@ -6,9 +6,14 @@ python:
 
 install:
   - pip install codecov pytest
+
 script:
   - python setup.py pytest
-deploy:
+
+after_script:
+ - codecov
+
+ deploy:
   - provider: pypi
     user: zeek
     distributions: sdist bdist_wheel
@@ -16,6 +21,3 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-
-after_deploy:
- - codecov
