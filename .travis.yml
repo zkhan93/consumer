@@ -1,7 +1,11 @@
+language: python
+cache: pip
+python: 3.5
+script: true
 deploy:
   provider: pypi
   user: zeek
-  distributions: "sdist bdist_wheel"
+  distributions: sdist bdist_wheel
   skip_existing: true
   on:
     tags: true
