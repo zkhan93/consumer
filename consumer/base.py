@@ -27,11 +27,16 @@ class DictResultMixin(object):
 
 
 class AbstractBaseWebService(object):
+    """
+        :param env: env name to use.
+        
+    """
     __metaclass__ = ABCMeta
 
     content = None
 
     def __init__(self, env=None):
+        
         self.is_prod = env and str(env).strip().lower() == 'prod'
 
     @property
@@ -89,28 +94,23 @@ class AbstractBaseWebService(object):
 
     @property
     def mandatory_param_rules(self):
-        ''' Service can optionally define a property "mandatory_params" which is a tuple of parameters combination,
-            representing set of required query parameter for the service,
+        """Service can optionally define a property "mandatory_params"
+        which is a tuple of parameters combination,
+        representing set of required query parameter for the service.
 
-            parameters passed to get method will be checked to have all of these params else the web service call will not continue
-            default: [] empty list no parameters are mandatory
+        Parameters passed to get method will be checked to have all of
+        these params else the web service call will not continue
+        default [] empty list no parameters are mandatory
 
-            sample 1:
-            (
-                ('param1',),
-                ('param2',),
-            )
-            sample 2:
-            (
-                ('param1','param2'),
-                ('param3',),
-            )
-            Explaination:
-                sample 1:
-                    Either 'param1' or 'param2' parameter should be present in query prameters
-                sample 2:
-                    Either 'param1' and 'param2' paramters should be present or just 'Name' parameter should be present in the query parameters
-        '''
+        Returns:
+            a tuple of pairs of parameters
+            
+            >>>``(('param1',), ('param2',),)``
+            ``param1`` or ``param2`` should be present
+            
+            ``(('param1','param2'), ('param3',),)``
+            either ``param1`` and ``param2`` paramters should be present or just ``Name`` parameter should be present in the query parameters
+        """
         return tuple()
 
     def _parse_params(self, **kawrs):

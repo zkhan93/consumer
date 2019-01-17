@@ -8,3 +8,4 @@ consumer.egg-info
 .coverage
 .eggs/
 docs/build/
+.vscode/
