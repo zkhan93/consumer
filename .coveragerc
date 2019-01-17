@@ -1,2 +1,2 @@
 [run]
-include=consumer/*
+include=./consumer/*
