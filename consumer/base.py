@@ -5,6 +5,7 @@ from abc import ABCMeta, abstractproperty, abstractmethod
 from pprint import pformat
 from defusedxml import ElementTree
 from collections import namedtuple
+from mixins import DictResultMixin, RetryableMixin
 import requests
 import logging
 import json
@@ -18,14 +19,6 @@ ServiceHost = namedtuple('ServiceHost', 'host port')
 ServiceHost.__new__.__defaults__ = (None,)
 
 
-class DictResultMixin(object):
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def as_dict(self, **params):
-        '''Implement this methods to convert the response from service call to a python dictionary'''
-
-
 class AbstractBaseWebService(object):
     """
         :param env: env name to use.
@@ -35,9 +28,10 @@ class AbstractBaseWebService(object):
 
     content = None
 
-    def __init__(self, env=None):
-        
+    def __init__(self, env=None, timeout=None, canRaise=False):
         self.is_prod = env and str(env).strip().lower() == 'prod'
+        self.timeout = float(timeout) if timeout else None
+        self.__can_raise = bool(canRaise)
 
     @property
     def protocol(self):
@@ -151,13 +145,16 @@ class AbstractBaseWebService(object):
             response = requests.get(self.url,
                                     params=params,
                                     headers=self.headers(),
-                                    verify=self.verify())
+                                    verify=self.verify(),
+                                    timeout=self.timeout)
             if response.ok:
                 self.content = response.content
             else:
                 logger.warn('Response was not OK Response: "%s"', response.content)
         except Exception as ex:
             logger.warn('Exception occured while consuming %s\n Exception: "%s"', self.__class__.__name__, str(ex))
+            if self.__can_raise:
+                raise
         return self
 
 
@@ -179,6 +176,10 @@ class AbstractBaseJsonWebService(AbstractBaseWebService, DictResultMixin):
 
     json = None
 
+    def __init__(self, env=None, timeout=None, canRaise=False):
+        AbstractBaseJsonWebService.__init__(self, env=env, timeout=timeout, canRaise=True)
+        self.__can_raise = bool(canRaise)
+
     def get(self, **params):
         '''
             deligate the call to super `get` method,
@@ -191,6 +192,8 @@ class AbstractBaseJsonWebService(AbstractBaseWebService, DictResultMixin):
                 self.json = json.loads(self.content)
             except ValueError as ex:
                 logger.error('Response was not in JSON format. Response: "%s" Exception: %s', self.content, str(ex))
+                if self.__can_raise:
+                    raise
         return self
 
     def as_dict(self):
@@ -207,6 +210,10 @@ class AbstractBaseXmlWebService(AbstractBaseWebService, DictResultMixin):
 
     xml = None
 
+    def __init__(self, env=None, timeout=None, canRaise=False):
+        AbstractBaseWebService.__init__(self, env=env, timeout=timeout, canRaise=True)
+        self.__can_raise = bool(canRaise)
+
     def get(self, **params):
         '''
             deligate the call to super `get` method,
@@ -220,6 +227,8 @@ class AbstractBaseXmlWebService(AbstractBaseWebService, DictResultMixin):
             except ElementTree.ParseError:
                 logger.exception('Response was not in proper XML format.')
                 self.xml = None
+                if self.__can_raise:
+                    raise
         return self
 
     def _xml_to_dict(self, node):
